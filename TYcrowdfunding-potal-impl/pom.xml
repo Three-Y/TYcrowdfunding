@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>TYcrowdfunding-potal-impl</artifactId>
+  <dependencies>
+	 <dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>servlet-api</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>javax.servlet.jsp</groupId>
+		<artifactId>jsp-api</artifactId>
+	</dependency>
+  	<dependency>
+  		<groupId>yan.ibbie</groupId>
+  		<artifactId>TYcrowdfunding-potal-api</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>yan.ibbie</groupId>
+  		<artifactId>TYcrowdfunding-common</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>yan.ibbie</groupId>
+  		<artifactId>TYcrowdfunding-manager-api</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
+  <parent>
+  	<groupId>yan.ibbie</groupId>
+  	<artifactId>TYcrowdfunding-parent</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  	<relativePath>../TYcrowdfunding-parent/pom.xml</relativePath>
+  </parent>
+</project>

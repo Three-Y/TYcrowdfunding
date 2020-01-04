@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="yan.ibbie.TYcrowdfunding.manager.dao.UserMapper">
+
+	<resultMap id="BaseResultMap" type="yan.ibbie.TYcrowdfunding.bean.User">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="loginacct" property="loginacct" jdbcType="VARCHAR" />
+		<result column="userpswd" property="userpswd" jdbcType="CHAR" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="createtime" property="createtime" jdbcType="CHAR" />
+	</resultMap>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from t_user
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<!-- 
+		如果mapper接口中的参数类型是Collection集合或者Array数组
+		那么可以使用collection="list"或者collection="array"
+		来获取传过来的这个集合或数组
+	 -->
+	<delete id="deleteBatchUserByVo">
+		delete from t_user where id in
+		<foreach collection="userList" open="(" close=")" separator="," item="user">
+			#{user.id}
+		</foreach>
+	</delete>
+	
+	<!-- 主键回填
+		useGeneratedKeys="true"，表示主键是生成的
+		keyProperty="id"，表示主键对应的属性是id
+		生成主键以后会自动给user填上属性id的值
+	 -->
+	<insert id="insert" parameterType="yan.ibbie.TYcrowdfunding.bean.User" useGeneratedKeys="true" keyProperty="id">
+		insert into t_user (id,
+		loginacct, userpswd,
+		username, email, createtime
+		)
+		values
+		(#{id,jdbcType=INTEGER}, #{loginacct,jdbcType=VARCHAR},
+		#{userpswd,jdbcType=CHAR},
+		#{username,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR}, #{createtime,jdbcType=CHAR}
+		)
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="yan.ibbie.TYcrowdfunding.bean.User">
+		update t_user
+		set
+		loginacct = #{loginacct,jdbcType=VARCHAR},
+		username = #{username,jdbcType=VARCHAR},
+		email = #{email,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select id, loginacct, userpswd, username, email,
+		createtime
+		from t_user
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select id, loginacct, userpswd,
+		username, email, createtime
+		from t_user
+	</select>
+
+	<select id="queryUserLogin" parameterType="map" resultMap="BaseResultMap">
+		select id, loginacct, userpswd,
+		username, email, createtime
+		from t_user where loginacct=#{loginacct} and userpswd=#{userpswd}
+	</select>
+	
+	<!-- <select id="queryList" resultMap="BaseResultMap">
+		select id, loginacct, userpswd,
+		username, email, createtime
+		from t_user limit #{startIndex},#{pageSize}
+	</select> -->
+	
+	<!-- where标签，有值时会自动添加where关键字，没有值时不会添加where关键字
+		模糊查询中，不能写成'%#{queryText}%',参数放在引号中是不行的
+		改写成'%'+${queryText}+'%'，也不行，sql中不能用加号拼串
+		改写成'%${queryText}%'，可以，但是不安全，会有sql注入的风险
+		最后使用concat()进行拼串
+	 -->
+	<select id="queryList" resultMap="BaseResultMap">
+		select id, loginacct, userpswd, username, email, createtime 
+		from t_user 
+		<where>
+			<if test="queryText!=null">loginacct like concat("%",#{queryText},"%")</if>
+		</where> 
+		order by createtime desc
+		limit #{startIndex},#{pageSize}
+	</select>
+	
+	<select id="queryCount" resultType="int">
+		select count(*)
+		from t_user
+		<where>
+			<if test="queryText!=null">loginacct like concat("%",#{queryText},"%")</if>
+		</where>
+	</select>
+	
+	<select id="queryAllRole" resultType="role">
+		select * from t_role
+	</select>
+	
+	<select id="queryRoleIdByUserId" resultType="int">
+		select roleid from t_user_role where userid=#{id}
+	</select>
+	
+	<insert id="insertRole">
+		insert into t_user_role (userid,roleid)
+		values (#{userid},#{roleid})
+	</insert>
+	
+	<delete id="deleteRole">
+		delete from t_user_role where userid=#{userid} and roleid in
+		<foreach collection="idList" item="roleid" open="(" separator="," close=")" >
+			#{roleid}
+		</foreach>
+	</delete>
+	
+	<select id="queryPermissionByUserid" parameterType="int" resultType="Permission">
+		SELECT * from t_permission WHERE id in 
+			(SELECT permissionid from t_role_permission INNER JOIN t_user_role 
+				ON t_role_permission.roleid=t_user_role.roleid 
+				where userid=#{userid}) ORDER BY t_permission.id
+	</select>
+	
+</mapper>

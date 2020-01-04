@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="yan.ibbie.TYcrowdfunding.potal.dao.TicketMapper" >
+  <resultMap id="BaseResultMap" type="yan.ibbie.TYcrowdfunding.bean.Ticket" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="memberid" property="memberid" jdbcType="INTEGER" />
+    <result column="piid" property="piid" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="authcode" property="authcode" jdbcType="CHAR" />
+    <result column="pstep" property="pstep" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_ticket
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="yan.ibbie.TYcrowdfunding.bean.Ticket" >
+    insert into t_ticket (id, memberid, piid, 
+      status, authcode, pstep)
+    values (#{id,jdbcType=INTEGER}, #{memberid,jdbcType=INTEGER}, #{piid,jdbcType=VARCHAR}, 
+      #{status,jdbcType=CHAR}, #{authcode,jdbcType=CHAR}, #{pstep,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="yan.ibbie.TYcrowdfunding.bean.Ticket" >
+    update t_ticket
+    set memberid = #{memberid,jdbcType=INTEGER},
+      piid = #{piid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR},
+      authcode = #{authcode,jdbcType=CHAR},
+      pstep = #{pstep,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select *
+    from t_ticket
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select *
+    from t_ticket
+  </select>
+  
+  <select id="selByMemberId" resultMap="BaseResultMap" >
+    select *
+    from t_ticket
+    where memberid=#{memberid} and status="0"
+  </select>
+ 
+  
+</mapper>
